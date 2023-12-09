@@ -56,7 +56,7 @@ export class News extends Component {
   render() {
     return (
       <>
-        <h2 className='m-3 text-center'>Today's {this.props.title} top stories</h2>
+        <h2 className='m-3 text-center'> Today's {this.props.title === 'News' ? 'top ' : `${this.props.title} `}headlines</h2>        
         {this.state.loading && <Spinner />}
 
         <InfiniteScroll
