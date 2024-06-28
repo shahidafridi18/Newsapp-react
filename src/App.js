@@ -1,7 +1,5 @@
-// App.js
-
 import './App.css';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import News from './components/News';
 import { HashRouter, Routes, Route } from 'react-router-dom';
@@ -62,81 +60,68 @@ const countryList = [
   { code: 'za', name: 'South Africa' },
 ];
 
-export default class App extends Component {
-  pageSize = 10;
-  apikey = '0bc16c5c3f3b4a65b46b4ab2eb228d6a';
+const App = () => {
+  const pageSize = 10;
+  const apikey = process.env.REACT_APP_API_KEY; // Access the API key from the environment variable
 
-  constructor() {
-    super();
-    this.state = {
-      country: 'in',
-      dropdownOpen: false,
-    };
-  }
+  const [country, setCountry] = useState('in');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  handleCountryChange = (c) => {
-    this.setState({ country: c, dropdownOpen: false });
+  const handleCountryChange = (c) => {
+    setCountry(c);
+    setDropdownOpen(false);
   };
 
-  toggleDropdown = () => {
-    this.setState((prevState) => ({ dropdownOpen: !prevState.dropdownOpen }));
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
+  return (
+    <div>
+      <HashRouter>
+        <Navbar />
 
-  render() {
-    return (
-      <div >
-        <HashRouter>
-          <Navbar />
+        <h1 className='text-center fade-in my-2'>Welcome to THE DAILY!</h1>
 
-          <h1 className='text-center fade-in my-2'>Welcome to the THE DAILY!</h1>
-
-          <div className='container my-4 d-flex justify-content-center'>
-            <p  style={{ fontSize: '20px' }}><strong>Choose a country :</strong></p>
-            <div className={`dropdown ${this.state.dropdownOpen ? 'open' : ''} ms-2`}>
-              <button
-                className="btn btn-dark dropdown-toggle custom-dropdown-btn" 
-                type="button"
-                id="dropdownMenuButton"
-                onClick={this.toggleDropdown}
-              >
-                {countryList.find((c) => c.code === this.state.country)?.name || 'Select Country'}
-              </button>
-              <div className={`dropdown-menu dropdown-menu-dark ${this.state.dropdownOpen ? 'show' : ''} dropdown-menu-right`} aria-labelledby="dropdownMenuButton">
-                <div style={{ maxHeight: '250px', overflowY: 'scroll' }}>
-                  {countryList.map((c) => (
-                    <button
-                      key={c.code}
-                      className="dropdown-item"
-                      onClick={() => this.handleCountryChange(c.code)}
-                    >
-                      {c.name}
-                    </button>
-                  ))}
-                </div>
+        <div className='container my-4 d-flex justify-content-center'>
+          <p style={{ fontSize: '20px' }}><strong>Choose a country:</strong></p>
+          <div className={`dropdown ${dropdownOpen ? 'open' : ''} ms-2`}>
+            <button
+              className="btn btn-dark dropdown-toggle custom-dropdown-btn"
+              type="button"
+              id="dropdownMenuButton"
+              onClick={toggleDropdown}
+            >
+              {countryList.find((c) => c.code === country)?.name || 'Select Country'}
+            </button>
+            <div className={`dropdown-menu dropdown-menu-dark ${dropdownOpen ? 'show' : ''} dropdown-menu-right`} aria-labelledby="dropdownMenuButton">
+              <div style={{ maxHeight: '250px', overflowY: 'scroll' }}>
+                {countryList.map((c) => (
+                  <button
+                    key={c.code}
+                    className="dropdown-item"
+                    onClick={() => handleCountryChange(c.code)}
+                  >
+                    {c.name}
+                  </button>
+                ))}
               </div>
             </div>
-
-
-
-
           </div>
+        </div>
 
-          <Routes>
-            <Route path="/" element={<News key="general" pageSize={this.pageSize} apikey={this.apikey} country={this.state.country} category="general" title="News" />} />
-            <Route path="/business" element={<News key="business" pageSize={this.pageSize} apikey={this.apikey} country={this.state.country} category="business" title="Business" />} />
-            <Route path="/entertainment" element={<News key="entertainment" pageSize={this.pageSize} apikey={this.apikey} country={this.state.country} category="Entertainment" title="Entertainment" />} />
-            <Route path="/sports" element={<News key="sports" pageSize={this.pageSize} apikey={this.apikey} country={this.state.country} category="sports" title="Sports" />} />
-            <Route path="/health" element={<News key="health" pageSize={this.pageSize} apikey={this.apikey} country={this.state.country} category="health" title="Health" />} />
-            <Route path="/science" element={<News key="science" pageSize={this.pageSize} apikey={this.apikey} country={this.state.country} category="science" title="Science" />} />
-            <Route path="/technology" element={<News key="technology" pageSize={this.pageSize} apikey={this.apikey} country={this.state.country} category="technology" title="Technology" />} />
-          </Routes>
-
-
-
-        </HashRouter>
-      </div>
-    );
-  }
+        <Routes>
+          <Route path="/" element={<News key="general" pageSize={pageSize} apikey={apikey} country={country} category="general" title="News" />} />
+          <Route path="/business" element={<News key="business" pageSize={pageSize} apikey={apikey} country={country} category="business" title="Business" />} />
+          <Route path="/entertainment" element={<News key="entertainment" pageSize={pageSize} apikey={apikey} country={country} category="entertainment" title="Entertainment" />} />
+          <Route path="/sports" element={<News key="sports" pageSize={pageSize} apikey={apikey} country={country} category="sports" title="Sports" />} />
+          <Route path="/health" element={<News key="health" pageSize={pageSize} apikey={apikey} country={country} category="health" title="Health" />} />
+          <Route path="/science" element={<News key="science" pageSize={pageSize} apikey={apikey} country={country} category="science" title="Science" />} />
+          <Route path="/technology" element={<News key="technology" pageSize={pageSize} apikey={apikey} country={country} category="technology" title="Technology" />} />
+        </Routes>
+      </HashRouter>
+    </div>
+  );
 }
 
+export default App;
